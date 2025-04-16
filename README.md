@@ -1,6 +1,6 @@
-# Airbnb Clone Project
+# ConferenceHub Project
 
-A full-stack Airbnb clone application with React frontend and Node.js/Express backend.
+A full-stack application with React frontend and Node.js/Express backend.
 
 ## Deployment to Heroku
 
@@ -65,11 +65,14 @@ This application is configured for easy deployment to Heroku. Follow these steps
    ```bash
    npm install
    cd client && npm install
+   cd ..
+   cd server && npm install
    ```
 3. Create a `.env` file based on `.env.example`
 4. Run the development server:
    ```bash
    npm run dev
+   npm run server
    ```
 
 ## Features
