@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 // Replace mongoose with Sequelize imports
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -14,23 +15,32 @@ const bodyParser = require("body-parser");
 const cloudinary = require('./config/cloudinary');
 const streamifier = require('streamifier');
 
-
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser()); // to read cookies
+
+// Define CORS options based on environment
+const corsOptions = {
+  credentials: true,
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.FRONTEND_URL || 'https://your-app-name.herokuapp.com' 
+    : 'http://localhost:5173',
+};
+
+app.use(cors(corsOptions));
+
 // We're keeping this line for any static files, but primary image hosting will be on Cloudinary
-app.use("/uploads", express.static(__dirname + "/uploads")); 
-app.use(
-  cors({
-    // enable two sites to communicate
-    credentials: true,
-    origin: "http://localhost:5173",
-  })
-);
+app.use("/uploads", express.static(__dirname + "/uploads"));
+
+// Code for production environment
+if (process.env.NODE_ENV === 'production') {
+  // Serve static files from the React app build directory
+  app.use(express.static(path.join(__dirname, '../client/dist')));
+}
 
 const bcryptSalt = bcrypt.genSaltSync(8);
-const jwtSecret = "fshewfbjhcdsbchdbsckjf";
+const jwtSecret = process.env.JWT_SECRET || "fshewfbjhcdsbchdbsckjf";
 
 // Replace MongoDB connection with PostgreSQL connection
 sequelize.authenticate()
@@ -546,6 +556,14 @@ app.delete("/places/:id", async (req, res) => {
   }
 });
 
-app.listen(4000, () => {
-  console.log('Server running on port 4000');
+// Add catch-all route before the app.listen call to serve the React app in production
+// This must be after all API routes
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  });
+}
+
+app.listen(process.env.PORT || 4000, () => {
+  console.log(`Server running on port ${process.env.PORT || 4000}`);
 });

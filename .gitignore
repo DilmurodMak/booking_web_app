@@ -128,3 +128,20 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Build directories
+/client/dist
+/client/build
+
+# Local uploads (since we're using Cloudinary in production)
+/api/uploads/*
+!api/uploads/.gitkeep
+
+# macOS specific files
+.DS_Store
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
