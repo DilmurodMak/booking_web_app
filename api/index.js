@@ -40,7 +40,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const bcryptSalt = bcrypt.genSaltSync(8);
-const jwtSecret = process.env.JWT_SECRET || "fshewfbjhcdsbchdbsckjf";
+const jwtSecret = process.env.JWT_SECRET;
 
 // Replace MongoDB connection with PostgreSQL connection
 sequelize.authenticate()
