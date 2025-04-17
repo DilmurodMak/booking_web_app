@@ -1,0 +1,35 @@
+services:
+  # Web service for the full stack application
+  - type: web
+    name: airbnb-clone-app
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: airbnb-clone-app
+          property: url
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: airbnb-clone-db
+          property: connectionString
+
+databases:
+  - name: airbnb-clone-db
+    plan: free
+    databaseName: airbnb_clone

@@ -13,7 +13,7 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 const cloudinary = require('./config/cloudinary');
 const streamifier = require('streamifier');
-
+const path = require('path');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -21,16 +21,17 @@ app.use(express.json());
 app.use(cookieParser()); // to read cookies
 // We're keeping this line for any static files, but primary image hosting will be on Cloudinary
 app.use("/uploads", express.static(__dirname + "/uploads")); 
+
+// Updated CORS configuration for deployment
 app.use(
   cors({
-    // enable two sites to communicate
     credentials: true,
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
   })
 );
 
 const bcryptSalt = bcrypt.genSaltSync(8);
-const jwtSecret = "fshewfbjhcdsbchdbsckjf";
+const jwtSecret = process.env.JWT_SECRET || "fshewfbjhcdsbchdbsckjf";
 
 // Replace MongoDB connection with PostgreSQL connection
 sequelize.authenticate()
@@ -546,6 +547,24 @@ app.delete("/places/:id", async (req, res) => {
   }
 });
 
-app.listen(4000, () => {
-  console.log('Server running on port 4000');
+// Update the port to use environment variable
+const PORT = process.env.PORT || 4000;
+
+// For production: Serve static files from the client build folder
+if (process.env.NODE_ENV === 'production') {
+  const clientBuildPath = path.join(__dirname, '../client/dist');
+  app.use(express.static(clientBuildPath));
+  
+  // Handle all routes to return the main index.html
+  app.get('*', (req, res) => {
+    // Exclude API routes
+    if (req.path.startsWith('/api/')) {
+      return res.status(404).send('API endpoint not found');
+    }
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
+  });
+}
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

@@ -1,4 +1,16 @@
 {
+  "name": "airbnb-clone",
+  "version": "1.0.0",
+  "description": "Airbnb Clone PERN Stack",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "node api/index.js",
+    "dev:api": "nodemon api/index.js",
+    "dev:client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:client\"",
+    "build": "cd client && npm install && npm run build",
+    "render-postbuild": "npm install && npm run build"
+  },
   "dependencies": {
     "@cloudinary/react": "^1.14.1",
     "@cloudinary/url-gen": "^1.21.0",
@@ -20,5 +32,12 @@
     "sequelize-cli": "^6.6.2",
     "streamifier": "^0.1.1",
     "xtypejs": "^0.7.1"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.1",
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14"
   }
 }
