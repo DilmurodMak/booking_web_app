@@ -3,7 +3,12 @@ services:
   - type: web
     name: airbnb-clone-app
     env: node
-    buildCommand: npm install && cd client && npm install && npx vite build && cd ..
+    buildCommand: |
+      npm ci
+      cd client
+      npm ci
+      npm run build
+      cd ..
     startCommand: cd api && node index.js
     envVars:
       - key: NODE_ENV
