@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import PerkSelections from "./PerkSelections";
 import PhotoUploader from "../components/PhotoUploader";
-import axios from "axios";
 import { Navigate, useParams } from "react-router-dom";
 import { UserContext } from "../components/UserContext";
+import api from "../utils/api";
 
 export default function PlacesFormPage() {
   const { id } = useParams();
@@ -32,7 +32,7 @@ export default function PlacesFormPage() {
     if (!id) {
       return;
     } else {
-      axios.get("/place/" + id).then((response) => {
+      api.get("/place/" + id).then((response) => {
         const { data } = response;
         console.log("Loaded photos from database:", data.photos);
         setTitle(data.title);
@@ -137,13 +137,13 @@ export default function PlacesFormPage() {
       
       if (id) {
         //update
-        response = await axios.put("/places", {
+        response = await api.put("/places", {
           id,
           ...placeData,
         });
       } else {
         //create a new place
-        response = await axios.post("/places", placeData);
+        response = await api.post("/places", placeData);
       }
       
       console.log("Response after saving:", response.data);

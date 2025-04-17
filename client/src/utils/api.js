@@ -3,9 +3,10 @@ import axios from 'axios';
 // Determine the base URL based on the environment
 let baseURL = '';
 
-// In production (on Render), use relative URLs which will hit the same domain
+// In production (on Render), use the API URL with the correct port
 if (import.meta.env.PROD) {
-  baseURL = ''; // Empty string means relative to current domain
+  // When deployed to Render as a single service, API is available at /api path
+  baseURL = '/api';
 } else {
   // In development, use the environment variable or fallback to localhost
   baseURL = import.meta.env.VITE_API_URL || 'http://localhost:4000';

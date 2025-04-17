@@ -47,11 +47,15 @@ sequelize.authenticate()
     console.error('Unable to connect to the database:', err);
   });
 
-app.get("/test", (req, res) => {
+// Create API router for all API endpoints
+const apiRouter = express.Router();
+
+// Move all API endpoints to the apiRouter
+apiRouter.get("/test", (req, res) => {
   res.json("test ok");
 });
 
-app.post("/register", async (req, res) => {
+apiRouter.post("/register", async (req, res) => {
   const { name, email, password, userType } = req.body;
   try {
     const userData = await User.create({
@@ -71,7 +75,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
+apiRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
     // Update Mongoose query to Sequelize query
@@ -113,7 +117,7 @@ function getUserDataFromToken(req) {
   });
 }
 
-app.get("/profile", (req, res) => {
+apiRouter.get("/profile", (req, res) => {
   const { token } = req.cookies;
   if (token) {
     // reloading info of the logged in user after refreshing
@@ -130,11 +134,11 @@ app.get("/profile", (req, res) => {
   }
 });
 
-app.post("/logout", (req, res) => {
+apiRouter.post("/logout", (req, res) => {
   res.cookie("token", "").json(true);
 });
 
-app.post("/upload-by-link", async (req, res) => {
+apiRouter.post("/upload-by-link", async (req, res) => {
   const { link } = req.body;
   try {
     // Upload directly to cloudinary using the external URL
@@ -152,7 +156,7 @@ app.post("/upload-by-link", async (req, res) => {
 
 // Modified upload function for Cloudinary
 const photoMiddleware = multer({ storage: multer.memoryStorage() });
-app.post("/upload", photoMiddleware.array("photos", 100), async (req, res) => {
+apiRouter.post("/upload", photoMiddleware.array("photos", 100), async (req, res) => {
   const uploadedFiles = [];
   try {
     // Process each file with Cloudinary
@@ -184,7 +188,7 @@ app.post("/upload", photoMiddleware.array("photos", 100), async (req, res) => {
 });
 
 // submit new place form
-app.post("/places", async (req, res) => {
+apiRouter.post("/places", async (req, res) => {
   const {
     title, address, photos,
     description, perks, extraInfo, 
@@ -236,7 +240,7 @@ app.post("/places", async (req, res) => {
   }
 });
 
-app.get("/user-places", async (req, res) => {
+apiRouter.get("/user-places", async (req, res) => {
   try {
     const userData = await getUserDataFromToken(req);
     // Update Mongoose find to Sequelize findAll
@@ -249,7 +253,7 @@ app.get("/user-places", async (req, res) => {
   }
 });
 
-app.get("/place/:id", async (req, res) => {
+apiRouter.get("/place/:id", async (req, res) => {
   const {id} = req.params;
   try {
     // Update Mongoose findById to Sequelize findByPk
@@ -260,7 +264,7 @@ app.get("/place/:id", async (req, res) => {
   }
 });
 
-app.get("/place/:placeId/:bookingId", async (req, res) => {
+apiRouter.get("/place/:placeId/:bookingId", async (req, res) => {
   const {bookingId} = req.params;
   try {
     // Update Mongoose findById to Sequelize findByPk
@@ -271,7 +275,7 @@ app.get("/place/:placeId/:bookingId", async (req, res) => {
   }
 });
 
-app.put("/places", async (req, res) => { 
+apiRouter.put("/places", async (req, res) => { 
   const {
     id, title, address, photos, description,
     perks, extraInfo, checkIn, checkOut, maxGuests,
@@ -319,7 +323,7 @@ app.put("/places", async (req, res) => {
   }
 });
 
-app.get("/home", async (req, res) => {
+apiRouter.get("/home", async (req, res) => {
   try {
     // Update Mongoose find to Sequelize findAll
     const places = await Place.findAll();
@@ -329,7 +333,7 @@ app.get("/home", async (req, res) => {
   }
 });
 
-app.post("/bookings", async (req, res) => {
+apiRouter.post("/bookings", async (req, res) => {
   try {
     const userData = await getUserDataFromToken(req);
     const {place, checkInDate, checkOutDate, 
@@ -354,7 +358,7 @@ app.post("/bookings", async (req, res) => {
   }
 });
 
-app.get("/bookings", async (req, res) => {
+apiRouter.get("/bookings", async (req, res) => {
   try {
     const userData = await getUserDataFromToken(req);
     
@@ -407,7 +411,7 @@ app.get("/bookings", async (req, res) => {
 });
 
 // New endpoint: Update booking status (approve/reject)
-app.put("/bookings/:id", async (req, res) => {
+apiRouter.put("/bookings/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
@@ -467,7 +471,7 @@ app.put("/bookings/:id", async (req, res) => {
 });
 
 // New endpoint to count pending booking requests for hosts
-app.get("/bookings/counts", async (req, res) => {
+apiRouter.get("/bookings/counts", async (req, res) => {
   try {
     const userData = await getUserDataFromToken(req);
     
@@ -497,7 +501,7 @@ app.get("/bookings/counts", async (req, res) => {
 });
 
 // New endpoint: Delete a place and all its associated bookings
-app.delete("/places/:id", async (req, res) => {
+apiRouter.delete("/places/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const userData = await getUserDataFromToken(req);
@@ -547,21 +551,29 @@ app.delete("/places/:id", async (req, res) => {
   }
 });
 
+// Mount the API router at /api prefix
+app.use('/api', apiRouter);
+
 // Update the port to use environment variable
 const PORT = process.env.PORT || 4000;
 
 // For production: Serve static files from the client build folder
 if (process.env.NODE_ENV === 'production') {
   const clientBuildPath = path.join(__dirname, '../client/dist');
+  
+  // Serve static assets from the build folder
   app.use(express.static(clientBuildPath));
   
-  // Handle all routes to return the main index.html
+  // All routes that aren't API routes should serve the index.html
   app.get('*', (req, res) => {
-    // Exclude API routes
-    if (req.path.startsWith('/api/')) {
-      return res.status(404).send('API endpoint not found');
+    // Only handle non-API routes for the React app
+    if (!req.path.startsWith('/api/')) {
+      console.log(`Serving index.html for path: ${req.path}`);
+      return res.sendFile(path.join(clientBuildPath, 'index.html'));
     }
-    res.sendFile(path.join(clientBuildPath, 'index.html'));
+    
+    // Let Express continue to handle API routes
+    return res.status(404).json({ error: "API endpoint not found" });
   });
 }
 

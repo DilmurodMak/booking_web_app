@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useContext, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { UserContext } from "../components/UserContext";
+import api from "../utils/api";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,7 +13,7 @@ export default function LoginPage() {
   async function loginUser(event) {
     event.preventDefault();
     try{
-      const {data} = await axios.post("/login", {email, password});
+      const {data} = await api.post("/login", {email, password});
       setUser(data); // get the user data
       alert("Login successful");
       setRedirect(true);

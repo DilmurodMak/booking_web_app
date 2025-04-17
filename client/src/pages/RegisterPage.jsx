@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/api";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -11,7 +11,7 @@ export default function RegisterPage() {
   async function registerUser(event) {
     event.preventDefault(); // avoid reloading from form
     try{
-      await axios.post("/register", { // await: the next line starts after this line finished 
+      await api.post("/register", { // Using the configured api instance instead of axios directly
         name,
         email,
         password,
