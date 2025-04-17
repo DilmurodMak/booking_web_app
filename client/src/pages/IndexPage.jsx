@@ -1,14 +1,15 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CloudinaryImage from "../components/CloudinaryImage";
+import api from "../utils/api";
 
 export default function IndexPage() {
   const [places, setPlaces] = useState([]);
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   
   useEffect(() => {
-    axios.get("/home").then((response) => {
+    // Using our API utility instead of direct axios import
+    api.get("/home").then((response) => {
       setPlaces(response.data);
     });
   }, []);

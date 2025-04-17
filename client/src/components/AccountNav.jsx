@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
-import axios from "axios";
+import api from "../utils/api";
 
 export default function AccountNav() {
   const { pathname } = useLocation(); // /account/:subpage
@@ -15,7 +15,7 @@ export default function AccountNav() {
   // Fetch pending booking count for hosts
   useEffect(() => {
     if (user?.userType === 'host') {
-      axios.get('/bookings/counts')
+      api.get('/bookings/counts')
         .then(({data}) => {
           setPendingCount(data.pendingCount);
         })
