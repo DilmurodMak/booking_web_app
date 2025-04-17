@@ -26,12 +26,12 @@ app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(
   cors({
     credentials: true,
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
   })
 );
 
 const bcryptSalt = bcrypt.genSaltSync(8);
-const jwtSecret = process.env.JWT_SECRET || "fshewfbjhcdsbchdbsckjf";
+const jwtSecret = process.env.JWT_SECRET;
 
 // Replace MongoDB connection with PostgreSQL connection
 sequelize.authenticate()

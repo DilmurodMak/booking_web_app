@@ -21,7 +21,7 @@ services:
         sync: false
       - key: CLOUDINARY_API_SECRET
         sync: false
-      - key: DATABASE_URL
+      - key: DB_URL
         fromDatabase:
           name: conferencehub-db
           property: connectionString

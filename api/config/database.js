@@ -22,9 +22,9 @@ const parseDatabaseUrl = (url) => {
 // Create Sequelize instance with connection options
 let sequelize;
 
-// Check if we have a DATABASE_URL (provided by Render)
-if (process.env.DATABASE_URL) {
-  sequelize = new Sequelize(process.env.DATABASE_URL, {
+// Check if we have a DB_URL (provided by Render)
+if (process.env.DB_URL) {
+  sequelize = new Sequelize(process.env.DB_URL, {
     dialect: 'postgres',
     dialectOptions: {
       ssl: {
