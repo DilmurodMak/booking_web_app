@@ -4,8 +4,8 @@ services:
     name: airbnb-clone-app
     runtime: node
     plan: free
-    buildCommand: npm install && npm run build
-    startCommand: npm start
+    buildCommand: npm install && cd client && npm install && node ./node_modules/.bin/vite build && cd ..
+    startCommand: cd api && node index.js
     envVars:
       - key: NODE_ENV
         value: production
