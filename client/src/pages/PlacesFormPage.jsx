@@ -110,7 +110,7 @@ export default function PlacesFormPage() {
         const fileName = fileNameWithExtension.split('.')[0];
         return {
           url: photo,
-          publicId: `airbnb_clone/${fileName}` // Assuming the folder structure
+          publicId: `conferencehub/${fileName}` // Updated folder structure
         };
       }
       // Otherwise, just pass it through (likely local file path)

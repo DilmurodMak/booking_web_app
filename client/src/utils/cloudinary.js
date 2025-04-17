@@ -69,7 +69,7 @@ export const getOptimizedImage = (photo, options = {}) => {
   // For Cloudinary URLs, try to add optimizations
   try {
     // Extract the public ID from the URL
-    // Example: https://res.cloudinary.com/dxb10mtcp/image/upload/v1650123456/airbnb_clone/image1.jpg
+    // Example: https://res.cloudinary.com/dxb10mtcp/image/upload/v1650123456/conferencehub/image1.jpg
     const urlParts = url.split('/');
     const uploadIndex = urlParts.indexOf('upload');
     

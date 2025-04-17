@@ -43,7 +43,7 @@ if (process.env.DATABASE_URL) {
 } else {
   // Use individual connection parameters (local development)
   sequelize = new Sequelize(
-    process.env.POSTGRES_DB || 'airbnb_clone', 
+    process.env.POSTGRES_DB || 'conferencehub', 
     process.env.POSTGRES_USER || 'postgres',
     process.env.POSTGRES_PASSWORD || 'postgres',
     {

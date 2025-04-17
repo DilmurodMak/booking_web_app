@@ -1,7 +1,7 @@
 {
-  "name": "airbnb-clone",
+  "name": "conferencehub",
   "version": "1.0.0",
-  "description": "Airbnb Clone PERN Stack",
+  "description": "ConferenceHub PERN Stack",
   "main": "api/index.js",
   "scripts": {
     "start": "cd api && node index.js",

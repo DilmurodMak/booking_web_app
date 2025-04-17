@@ -139,7 +139,7 @@ app.post("/upload-by-link", async (req, res) => {
   try {
     // Upload directly to cloudinary using the external URL
     const result = await cloudinary.uploader.upload(link, {
-      folder: 'airbnb_clone',
+      folder: 'conferencehub',
     });
     
     // Return the secure URL and public ID for storage in the database
@@ -162,7 +162,7 @@ app.post("/upload", photoMiddleware.array("photos", 100), async (req, res) => {
       // Create upload stream to Cloudinary
       const uploadPromise = new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream({
-          folder: 'airbnb_clone',
+          folder: 'conferencehub',
         }, (error, result) => {
           if (error) return reject(error);
           resolve({ url: result.secure_url, publicId: result.public_id });

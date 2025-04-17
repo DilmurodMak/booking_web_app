@@ -1,4 +1,4 @@
-# Airbnb Clone - PERN Stack
+# ConferenceHub - PERN Stack
 
 A full-stack ConferenceHub built with the PERN stack (PostgreSQL, Express, React, Node.js).
 
@@ -14,7 +14,7 @@ A full-stack ConferenceHub built with the PERN stack (PostgreSQL, Express, React
 ## Project Structure
 
 ```
-airbnb-clone/
+conferencehub/
 ├── api/                # Backend Express server
 │   ├── config/         # Configuration files (DB, Cloudinary)
 │   ├── models/         # Sequelize models
