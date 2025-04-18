@@ -2,11 +2,14 @@ import { differenceInCalendarDays } from "date-fns";
 import DateDuration from "./DateDuration";
 import { useContext, useState } from "react";
 import { UserContext } from "./UserContext";
+import { useNotification } from "./NotificationContext";
 import api from "../utils/api";
 
 export default function BookingCard({bookingDetail, onBookingUpdate}) {
   const { user } = useContext(UserContext);
+  const { notify } = useNotification();
   const [isUpdating, setIsUpdating] = useState(false);
+  const [error, setError] = useState("");
   
   // Get the status color based on the booking status
   const getStatusColor = (status) => {
@@ -20,6 +23,7 @@ export default function BookingCard({bookingDetail, onBookingUpdate}) {
   // Update booking status (approve, reject, cancel)
   async function updateBookingStatus(status) {
     const action = user?.userType === 'host' ? status : 'cancel';
+    setError("");
     
     if (window.confirm(`Are you sure you want to ${action} this booking?`)) {
       setIsUpdating(true);
@@ -32,16 +36,17 @@ export default function BookingCard({bookingDetail, onBookingUpdate}) {
         
         if (status === 'rejected') {
           if (user?.userType === 'host') {
-            alert(`Booking rejected successfully`);
+            notify(`Booking rejected successfully`, "success");
           } else {
-            alert(`Booking cancelled successfully`);
+            notify(`Booking cancelled successfully`, "success");
           }
         } else {
-          alert(`Booking ${status} successfully`);
+          notify(`Booking ${status} successfully`, "success");
         }
       } catch (error) {
         setIsUpdating(false);
-        alert(`Error: ${error.response?.data?.error || error.message}`);
+        setError(error.response?.data?.error || error.message);
+        notify(`Error: ${error.response?.data?.error || error.message}`, "error");
       }
     }
   }
@@ -57,6 +62,12 @@ export default function BookingCard({bookingDetail, onBookingUpdate}) {
               {bookingDetail.status.charAt(0).toUpperCase() + bookingDetail.status.slice(1)}
             </div>
           </div>
+
+          {error && (
+            <div className="bg-red-100 text-red-800 p-3 rounded-lg mb-4 text-sm">
+              {error}
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-2">

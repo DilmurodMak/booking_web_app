@@ -1,15 +1,41 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../utils/api";
+import { useNotification } from "../components/NotificationContext";
+import { validateForm } from "../utils/formUtils";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("client");
+  const [error, setError] = useState("");
+  const { notify } = useNotification();
 
   async function registerUser(event) {
     event.preventDefault(); // avoid reloading from form
+    setError("");
+    
+    // Validate form
+    const { isValid, errorMessage } = validateForm(
+      { name, email, password },
+      {
+        name: { required: true, errorMessage: "Name is required" },
+        email: { required: true, errorMessage: "Email is required" },
+        password: { 
+          required: true, 
+          errorMessage: "Password is required",
+          pattern: /^.{6,}$/, 
+          patternErrorMessage: "Password must be at least 6 characters long"
+        }
+      }
+    );
+    
+    if (!isValid) {
+      setError(errorMessage);
+      return;
+    }
+    
     try {
       await api.post("/register", { // Using the configured api instance instead of axios directly
         name,
@@ -17,11 +43,16 @@ export default function RegisterPage() {
         password,
         userType,
       });
-      alert("Registration successful, you can go to login. ");
+      notify("Registration successful, you can go to login.", "success");
+      // Clear the form after successful registration
+      setName("");
+      setEmail("");
+      setPassword("");
     } catch (e) {
-      alert("Registration failed. Please try again later. ");
+      setError(e.response?.data?.error || "Registration failed. Please try again later.");
+      notify("Registration failed. Please try again later.", "error");
     }
-  };
+  }
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 lg:pt-8">
@@ -30,6 +61,12 @@ export default function RegisterPage() {
         <p className="text-center text-gray-500 text-xs sm:text-sm mb-2 sm:mb-3">Create your account</p>
         
         <form className="bg-white p-3 sm:p-4 lg:p-5 rounded-xl shadow-sm" onSubmit={registerUser}>
+          {error && (
+            <div className="bg-red-100 text-red-800 p-3 rounded-lg mb-4 text-sm">
+              {error}
+            </div>
+          )}
+          
           <div className="grid md:grid-cols-2 gap-x-4">
             <div className="mb-2">
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-0.5">Full Name</label>

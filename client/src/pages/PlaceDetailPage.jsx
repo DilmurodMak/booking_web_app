@@ -5,6 +5,7 @@ import BookingWidget from "../components/BookingWidget";
 import PhotoGallery from "../components/PhotoGallery";
 import BookingCard from "../components/BookingCard";
 import { UserContext } from "../components/UserContext";
+import { useNotification } from "../components/NotificationContext";
 
 export default function PlaceDetailPage() {
   const { placeId, bookingId } = useParams();
@@ -12,7 +13,9 @@ export default function PlaceDetailPage() {
   const [bookingDetail, setBookingDetail] = useState();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [error, setError] = useState("");
   const { user } = useContext(UserContext);
+  const { notify } = useNotification();
   const navigate = useNavigate();
   const months = [
     "Jan","Feb","Mar","Apr",
@@ -40,12 +43,14 @@ export default function PlaceDetailPage() {
   async function handleDelete() {
     if (window.confirm('Are you sure you want to delete this conference room? This will also cancel all associated bookings and cannot be undone.')) {
       setIsDeleting(true);
+      setError("");
       try {
         await api.delete(`/places/${placeId}`);
-        alert('Conference room deleted successfully');
+        notify('Conference room deleted successfully', 'success');
         navigate('/account/user-places'); // Redirect to my conference rooms page
       } catch (error) {
-        alert(`Error: ${error.response?.data?.error || error.message}`);
+        setError(error.response?.data?.error || error.message);
+        notify(`Error: ${error.response?.data?.error || error.message}`, 'error');
         setIsDeleting(false);
       }
     }
@@ -86,6 +91,13 @@ export default function PlaceDetailPage() {
       {isOwner && (
         <div className="bg-green-100 p-4 mb-4 rounded-lg">
           <p className="text-green-800 font-semibold text-sm md:text-base">You are the owner of this conference room</p>
+        </div>
+      )}
+
+      {/* Error notification */}
+      {error && (
+        <div className="bg-red-100 text-red-800 p-4 mb-4 rounded-lg">
+          {error}
         </div>
       )}
 

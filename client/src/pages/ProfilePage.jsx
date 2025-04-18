@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../components/UserContext";
+import { useNotification } from "../components/NotificationContext";
 import { Navigate, useParams } from "react-router-dom";
 import api from "../utils/api";
 import AccountNav from "../components/AccountNav";
@@ -7,6 +8,7 @@ import AccountNav from "../components/AccountNav";
 export default function ProfilePage({}) {
   const [redirect, setRedirect] = useState(); // control the redirect after logout
   const { isReady, user, setUser, setReady } = useContext(UserContext); // check the user data loading status
+  const { notify } = useNotification();
 
   if (!isReady) {
     return <div className="px-14"><p>Loading...</p></div>;
@@ -19,6 +21,7 @@ export default function ProfilePage({}) {
 
   async function logout() {
     await api.post("/logout");
+    notify("Successfully logged out", "success");
     setRedirect("/");
     setUser(null);
   }

@@ -1,24 +1,45 @@
 import { useContext, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { UserContext } from "../components/UserContext";
+import { useNotification } from "../components/NotificationContext";
 import api from "../utils/api";
+import { validateForm } from "../utils/formUtils";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
+  const [error, setError] = useState("");
 
   const {setUser} = useContext(UserContext);
+  const { notify } = useNotification();
 
   async function loginUser(event) {
     event.preventDefault();
-    try{
+    setError("");
+    
+    // Validate form
+    const { isValid, errorMessage } = validateForm(
+      { email, password },
+      {
+        email: { required: true, errorMessage: "Email is required" },
+        password: { required: true, errorMessage: "Password is required" }
+      }
+    );
+    
+    if (!isValid) {
+      setError(errorMessage);
+      return;
+    }
+    
+    try {
       const {data} = await api.post("/login", {email, password});
       setUser(data); // get the user data
-      alert("Login successful");
+      notify("Successfully logged in", "success");
       setRedirect(true);
     } catch (e) {
-      alert("Login failed");
+      setError("Login failed. Please check your credentials.");
+      notify("Login failed. Please check your credentials.", "error");
     }
   }
 
@@ -33,6 +54,12 @@ export default function LoginPage() {
         <p className="text-center text-gray-500 text-xs sm:text-sm mb-3 sm:mb-4">Welcome back!</p>
         
         <form className="bg-white p-3 sm:p-6 rounded-xl shadow-sm" onSubmit={loginUser}>
+          {error && (
+            <div className="bg-red-100 text-red-800 p-3 rounded-lg mb-4 text-sm">
+              {error}
+            </div>
+          )}
+          
           <div className="mb-3">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input

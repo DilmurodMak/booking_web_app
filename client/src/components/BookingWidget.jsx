@@ -3,6 +3,8 @@ import { differenceInCalendarDays } from "date-fns";
 import { Navigate } from "react-router-dom";
 import api from "../utils/api";
 import { UserContext } from "./UserContext";
+import { useNotification } from "./NotificationContext";
+import { validateForm } from "../utils/formUtils";
 
 export default function BookingWidget({ placeDetail, buttonDisabled }) {
   const [numOfGuests, setNumOfGuests] = useState(1);
@@ -13,6 +15,7 @@ export default function BookingWidget({ placeDetail, buttonDisabled }) {
   const [redirect, setRedirect] = useState();
   const [error, setError] = useState("");
   const { user } = useContext(UserContext);
+  const { notify } = useNotification();
 
   useEffect(() => {
     if (user) {
@@ -50,21 +53,45 @@ export default function BookingWidget({ placeDetail, buttonDisabled }) {
     event.preventDefault();
     setError("");
 
-    // Basic validation
-    if (!checkInDate) {
-      setError("Please select a check-in date");
-      return;
-    }
-    if (!checkOutDate) {
-      setError("Please select a check-out date");
-      return;
-    }
-    if (!guestName) {
-      setError("Please provide your name");
-      return;
-    }
-    if (!guestPhone) {
-      setError("Please provide your phone number for contact");
+    // Use the form validation util
+    const { isValid, errorMessage } = validateForm(
+      { 
+        checkInDate, 
+        checkOutDate, 
+        guestName, 
+        guestPhone, 
+        numOfGuests 
+      },
+      {
+        checkInDate: { 
+          required: true, 
+          errorMessage: "Please select a check-in date"
+        },
+        checkOutDate: { 
+          required: true, 
+          errorMessage: "Please select a check-out date"
+        },
+        guestName: { 
+          required: true, 
+          errorMessage: "Please provide your name"
+        },
+        guestPhone: { 
+          required: true, 
+          errorMessage: "Please provide your phone number for contact"
+        },
+        numOfGuests: { 
+          type: "number", 
+          required: true,
+          min: 1, 
+          max: placeDetail.maxGuests,
+          minErrorMessage: "Number of guests must be at least 1",
+          maxErrorMessage: `Maximum capacity is ${placeDetail.maxGuests} people`
+        }
+      }
+    );
+    
+    if (!isValid) {
+      setError(errorMessage);
       return;
     }
 
@@ -72,12 +99,14 @@ export default function BookingWidget({ placeDetail, buttonDisabled }) {
       // Check if user is logged in
       if (!user) {
         setError("Please log in to book a conference room");
+        notify("Please log in to book a conference room", "error");
         return;
       }
 
       // Check if user is not the owner (hosts shouldn't book their own rooms)
       if (user.id === placeDetail.ownerId) {
         setError("You cannot book your own conference room");
+        notify("You cannot book your own conference room", "error");
         return;
       }
 
@@ -93,12 +122,12 @@ export default function BookingWidget({ placeDetail, buttonDisabled }) {
         totalPrice,
       });
 
+      notify("Booking request submitted successfully", "success");
       setRedirect("/account/bookings");
     } catch (err) {
-      setError(
-        err.response?.data?.error ||
-          "Failed to make reservation. Please try again."
-      );
+      const errorMsg = err.response?.data?.error || "Failed to make reservation. Please try again.";
+      setError(errorMsg);
+      notify(errorMsg, "error");
     }
   }
 
@@ -141,8 +170,9 @@ export default function BookingWidget({ placeDetail, buttonDisabled }) {
         <div className="my-2 border rounded-xl">
           <div className="flex border-b">
             <div className="px-3 py-4 w-1/2">
-              <label>Start date: </label>
+              <label htmlFor="checkInDate">Start date: </label>
               <input
+                id="checkInDate"
                 type="date"
                 className="cursor-pointer"
                 value={checkInDate}
@@ -160,8 +190,9 @@ export default function BookingWidget({ placeDetail, buttonDisabled }) {
               />
             </div>
             <div className="px-3 py-4 border-l">
-              <label>End date: </label>
+              <label htmlFor="checkOutDate">End date: </label>
               <input
+                id="checkOutDate"
                 type="date"
                 className="cursor-pointer"
                 value={checkOutDate}
@@ -181,8 +212,9 @@ export default function BookingWidget({ placeDetail, buttonDisabled }) {
             </div>
           </div>
           <div className="px-3 py-4 border-b">
-            <label>Number of attendees</label>
+            <label htmlFor="numOfGuests">Number of attendees</label>
             <input
+              id="numOfGuests"
               type="number"
               value={numOfGuests}
               onChange={(event) => setNumOfGuests(event.target.value)}
@@ -197,15 +229,17 @@ export default function BookingWidget({ placeDetail, buttonDisabled }) {
             )}
           </div>
           <div className="px-3 py-4">
-            <label>Your full name</label>
+            <label htmlFor="guestName">Your full name</label>
             <input
+              id="guestName"
               type="text"
               value={guestName}
               onChange={(event) => setGuestName(event.target.value)}
               placeholder="Jane Doe"
             />
-            <label>Phone number</label>
+            <label htmlFor="guestPhone">Phone number</label>
             <input
+              id="guestPhone"
               type="text"
               value={guestPhone}
               onChange={(event) => setGuestPhone(event.target.value)}
