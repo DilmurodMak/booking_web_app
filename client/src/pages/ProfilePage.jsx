@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../components/UserContext";
-import { Navigate} from "react-router-dom";
-import axios from "axios";
+import { Navigate, useParams } from "react-router-dom";
+import api from "../utils/api";
 import AccountNav from "../components/AccountNav";
 
 export default function ProfilePage({}) {
@@ -18,7 +18,7 @@ export default function ProfilePage({}) {
   }
 
   async function logout() {
-    await axios.post("/logout");
+    await api.post("/logout");
     setRedirect("/");
     setUser(null);
   }

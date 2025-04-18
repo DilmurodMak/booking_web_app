@@ -2,7 +2,7 @@ import { differenceInCalendarDays } from "date-fns";
 import DateDuration from "./DateDuration";
 import { useContext, useState } from "react";
 import { UserContext } from "./UserContext";
-import axios from "axios";
+import api from "../utils/api";
 
 export default function BookingCard({bookingDetail, onBookingUpdate}) {
   const { user } = useContext(UserContext);
@@ -24,7 +24,7 @@ export default function BookingCard({bookingDetail, onBookingUpdate}) {
     if (window.confirm(`Are you sure you want to ${action} this booking?`)) {
       setIsUpdating(true);
       try {
-        const { data } = await axios.put(`/bookings/${bookingDetail.id}`, { status });
+        const { data } = await api.put(`/bookings/${bookingDetail.id}`, { status });
         setIsUpdating(false);
         if (onBookingUpdate) {
           onBookingUpdate(data.booking);

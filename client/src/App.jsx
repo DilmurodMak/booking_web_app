@@ -4,7 +4,6 @@ import IndexPage from "./pages/IndexPage.jsx";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import Layout from "./components/Layout";
-import axios from "axios";
 import { UserContextProvider } from "./components/UserContext";
 import PlacesPage from "./pages/PlacesPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -12,11 +11,7 @@ import PlacesFormPage from "./pages/PlacesFormPage";
 import BookingsPage from "./pages/BookingsPage";
 import PlaceDetailPage from "./pages/PlaceDetailPage";
 
-axios.defaults.baseURL = "http://localhost:4000";
-axios.defaults.withCredentials = true; // cookie setting
-
 function App() {
-
 
   return (
     <UserContextProvider>

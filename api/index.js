@@ -22,11 +22,11 @@ app.use(cookieParser()); // to read cookies
 // We're keeping this line for any static files, but primary image hosting will be on Cloudinary
 app.use("/uploads", express.static(__dirname + "/uploads")); 
 
-// Updated CORS configuration for deployment
+// Updated CORS configuration for both development and production
 app.use(
   cors({
     credentials: true,
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   })
 );
 

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { differenceInCalendarDays } from "date-fns";
-import axios from "axios";
 import { Navigate } from "react-router-dom";
+import api from "../utils/api";
 import { UserContext } from "./UserContext";
 
 export default function BookingWidget({ placeDetail, buttonDisabled }) {
@@ -83,7 +83,7 @@ export default function BookingWidget({ placeDetail, buttonDisabled }) {
 
       const totalPrice = placeDetail.price * hours;
 
-      const response = await axios.post("/bookings", {
+      const response = await api.post("/bookings", {
         place: placeDetail.id,
         checkInDate,
         checkOutDate,

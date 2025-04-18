@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../utils/api";
 import { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import BookingWidget from "../components/BookingWidget";
@@ -24,12 +24,12 @@ export default function PlaceDetailPage() {
     if (!placeId) {
       return;
     }
-    axios.get("/place/" + placeId).then((response) => {
+    api.get("/place/" + placeId).then((response) => {
       setPlaceDetail(response.data);
     });
 
     if (placeId && bookingId) {
-      axios.get("/place/" + placeId + "/" + bookingId).then((response) => {
+      api.get("/place/" + placeId + "/" + bookingId).then((response) => {
         setBookingDetail(response.data);
       });
       setButtonDisabled(true);
@@ -41,7 +41,7 @@ export default function PlaceDetailPage() {
     if (window.confirm('Are you sure you want to delete this conference room? This will also cancel all associated bookings and cannot be undone.')) {
       setIsDeleting(true);
       try {
-        await axios.delete(`/places/${placeId}`);
+        await api.delete(`/places/${placeId}`);
         alert('Conference room deleted successfully');
         navigate('/account/user-places'); // Redirect to my conference rooms page
       } catch (error) {
