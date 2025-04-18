@@ -258,7 +258,7 @@ export default function PlacesFormPage() {
           </div>
           
           <div className="bg-white p-3 rounded-2xl shadow-sm border">
-            <h3 className="text-base font-medium mb-1">Price per hour (£)</h3>
+            <h3 className="text-base font-medium mb-1">Price per hour ($)</h3>
             <input
               type="number"
               min="0"

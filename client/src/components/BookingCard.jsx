@@ -139,7 +139,7 @@ export default function BookingCard({bookingDetail, onBookingUpdate}) {
             <div className="flex flex-col">
               <div className="bg-primary w-full rounded-2xl text-white px-4 py-3 text-center mb-4">
                 <p>Total price</p>
-                <div className="text-2xl">£{bookingDetail.totalPrice}</div>
+                <div className="text-2xl">${bookingDetail.totalPrice}</div>
               </div>
               
               {/* Action buttons */}

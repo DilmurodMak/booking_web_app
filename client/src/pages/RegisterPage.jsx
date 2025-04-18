@@ -50,7 +50,6 @@ export default function RegisterPage() {
       setPassword("");
     } catch (e) {
       setError(e.response?.data?.error || "Registration failed. Please try again later.");
-      notify("Registration failed. Please try again later.", "error");
     }
   }
 

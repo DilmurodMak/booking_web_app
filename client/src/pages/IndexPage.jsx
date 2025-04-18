@@ -37,7 +37,7 @@ export default function IndexPage() {
                   {" - "}{new Date(place.endDate).getDate()} {months[new Date(place.endDate).getMonth()]}
                 </p>
               )}
-              <p className="underline mt-1"><span className="font-bold">£{place.price}</span> total</p>
+              <p className="underline mt-1"><span className="font-bold">${place.price}</span> total</p>
             </div>
           </Link>
         ))}

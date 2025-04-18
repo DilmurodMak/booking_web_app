@@ -99,14 +99,12 @@ export default function BookingWidget({ placeDetail, buttonDisabled }) {
       // Check if user is logged in
       if (!user) {
         setError("Please log in to book a conference room");
-        notify("Please log in to book a conference room", "error");
         return;
       }
 
       // Check if user is not the owner (hosts shouldn't book their own rooms)
       if (user.id === placeDetail.ownerId) {
         setError("You cannot book your own conference room");
-        notify("You cannot book your own conference room", "error");
         return;
       }
 
@@ -127,7 +125,6 @@ export default function BookingWidget({ placeDetail, buttonDisabled }) {
     } catch (err) {
       const errorMsg = err.response?.data?.error || "Failed to make reservation. Please try again.";
       setError(errorMsg);
-      notify(errorMsg, "error");
     }
   }
 
@@ -139,7 +136,7 @@ export default function BookingWidget({ placeDetail, buttonDisabled }) {
     return (
       <div className="bg-white p-5 rounded-xl border shadow-md">
         <div className="text-left pb-1">
-          <span className="font-bold text-2xl">£{placeDetail.price}</span> per
+          <span className="font-bold text-2xl">${placeDetail.price}</span> per
           hour
         </div>
         <p className="my-4 text-center">
@@ -157,7 +154,7 @@ export default function BookingWidget({ placeDetail, buttonDisabled }) {
     <form onSubmit={(event) => handleReserve(event)}>
       <div className="bg-white p-5 rounded-xl border shadow-md">
         <div className="text-left pb-1">
-          <span className="font-bold text-2xl">£{placeDetail.price}</span> per
+          <span className="font-bold text-2xl">${placeDetail.price}</span> per
           hour
         </div>
 
@@ -251,20 +248,20 @@ export default function BookingWidget({ placeDetail, buttonDisabled }) {
               <div className="border-b border-t">
                 <div className="flex px-3 py-4 justify-between items-center text-gray-600">
                   <p className="underline">
-                    £{placeDetail.price} x {hours} hours{" "}
+                    ${placeDetail.price} x {hours} hours{" "}
                   </p>
-                  <p className="">£{placeDetail.price * hours}</p>
+                  <p className="">${placeDetail.price * hours}</p>
                 </div>
                 <div className="flex px-3 pb-4 justify-between items-center text-gray-600">
                   <p className="underline">Service fee</p>
-                  <p className="">£{hours && "20"}</p>
+                  <p className="">${hours && "20"}</p>
                 </div>
               </div>
               <div>
                 <div className="flex px-3 py-4 justify-between items-center">
                   <p className="underline">Total</p>
                   <p className="">
-                    £{hours && placeDetail.price * hours + 20}
+                    ${hours && placeDetail.price * hours + 20}
                   </p>
                 </div>
               </div>

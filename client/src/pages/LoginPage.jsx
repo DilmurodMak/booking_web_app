@@ -38,8 +38,7 @@ export default function LoginPage() {
       notify("Successfully logged in", "success");
       setRedirect(true);
     } catch (e) {
-      setError("Login failed. Please check your credentials.");
-      notify("Login failed. Please check your credentials.", "error");
+      setError(e.response?.data?.error || "Login failed. Please check your credentials.");
     }
   }
 
