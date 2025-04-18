@@ -57,12 +57,12 @@ export default function PlaceDetailPage() {
   const isOwner = user && placeDetail.ownerId === user.id;
 
   return (
-    <div className="mx-4 md:mx-8 lg:mx-14 -mt-4">
+    <div className="mx-3 md:mx-8 lg:mx-14 -mt-4">
       {/* Header section */}
       <div className="mb-4">
-        <h1 className="text-2xl mb-2 font-bold">{placeDetail.title}</h1>
+        <h1 className="text-xl md:text-2xl mb-2 font-bold">{placeDetail.title}</h1>
         <a
-          className="flex gap-1 font-semibold underline items-center"
+          className="flex gap-1 font-semibold underline items-center text-sm md:text-base"
           target="_blank"
           href={"http://maps.google.com/?q=" + placeDetail.address}
         >
@@ -70,7 +70,7 @@ export default function PlaceDetailPage() {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className="w-5 h-5"
+            className="w-4 h-4 md:w-5 md:h-5"
           >
             <path
               fillRule="evenodd"
@@ -85,7 +85,7 @@ export default function PlaceDetailPage() {
       {/* Owner notification */}
       {isOwner && (
         <div className="bg-green-100 p-4 mb-4 rounded-lg">
-          <p className="text-green-800 font-semibold">You are the owner of this conference room</p>
+          <p className="text-green-800 font-semibold text-sm md:text-base">You are the owner of this conference room</p>
         </div>
       )}
 
@@ -93,7 +93,7 @@ export default function PlaceDetailPage() {
       <BookingCard bookingDetail={bookingDetail}/>
 
       {/* Main content layout - photos and sidebar */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Left side - Photos and description */}
         <div className="lg:col-span-2">
           <div className="mb-6">
@@ -102,9 +102,9 @@ export default function PlaceDetailPage() {
           
           <div className="mt-6">
             <div className="mb-5">
-              <h2 className="text-2xl font-semibold mb-2">Description</h2>
-              <p className="leading-7">{placeDetail.description}</p>
-              <div className="my-4 mb-6 leading-7">
+              <h2 className="text-xl md:text-2xl font-semibold mb-2">Description</h2>
+              <p className="leading-6 md:leading-7 text-sm md:text-base">{placeDetail.description}</p>
+              <div className="my-4 mb-6 leading-6 md:leading-7 text-sm md:text-base">
                 <p>
                   Available dates: {new Date(placeDetail.startDate).getDate()}{" "}
                   {months[new Date(placeDetail.startDate).getMonth()]}
@@ -119,8 +119,8 @@ export default function PlaceDetailPage() {
               <hr />
             </div>
             <div className="mb-5 mt-2">
-              <h2 className="text-2xl font-semibold my-2">Extra information</h2>
-              <p className="leading-7">{placeDetail.extraInfo}</p>
+              <h2 className="text-xl md:text-2xl font-semibold my-2">Extra information</h2>
+              <p className="leading-6 md:leading-7 text-sm md:text-base">{placeDetail.extraInfo}</p>
             </div>
           </div>
         </div>
